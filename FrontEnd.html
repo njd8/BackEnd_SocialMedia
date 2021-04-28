@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab09 Demo</title>
+</head>
+<body>
+
+    <form>
+        <label> Click to get a JSON Object</label>
+        <button onclick="GetJSON()" type="button">Click Me</button>
+    </form>
+
+    <form>
+        <label> Click to get a Send JSON Object </label>
+        <button onclick="SendJSON()" type="button">Click Me</button>
+    </form>
+
+    <form>
+        <label> Click to get a String</label>
+        <button onclick="GetString()" type="button">Click Me</button>
+    </form>
+
+    <h1>------------ RESULTS ------------</h1>
+    <p id="Data Location"> </p>
+
+    <script>
+
+        // This function will get a JSON from the BackEnd and send it to the FrontEnd
+        function GetJSON() {
+
+            var XHR = new XMLHttpRequest();
+
+            XHR.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var responseData = JSON.parse(this.response);
+                    var getName = responseData.Name;
+                    var getID = responseData.ID;
+                    document.getElementById("Data Location").innerHTML = "<strong>Name from JSON:</strong> " + getName + "<br><strong>ID from JSON:</strong> " + getID;
+                    alert("Name from GET: " + getName + "\nID from GET: " + getID);
+                }
+            }
+
+            XHR.open("GET", "http://localhost:3000/GetJSON/");
+            XHR.send();
+        }
+
+        // This function will send a JSON from the FrontEnd to the BackEnd
+        function SendJSON(){
+
+            var XHR = new XMLHttpRequest();
+
+            XHR.onreadystatechange = function(){
+                if(XHR.readyState == 4 && XHR.status == 200){
+                    alert(this.responseText);
+                }
+            }
+            var data = JSON.stringify({"Name": "Tony", "ID": "4949"});
+            XHR.open("POST", "http://localhost:3000/SendJSON/", true);
+            XHR.setRequestHeader('Access-Control-Allow-Origin', '*');
+            XHR.setRequestHeader("Content-Type", 'application/json');
+            XHR.send(data); // was JSON.stringify(data)
+        }
+
+
+
+        // This function will get a string from the BackEnd and send it to the FrontEnd
+        function GetString() {
+
+            var XHR = new XMLHttpRequest();
+
+            XHR.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var getString = this.response;
+                    document.getElementById("Data Location").innerHTML = "<strong>String from GET:</strong> " + getString;
+                    alert("String from GET: " + getString);
+                }
+            }
+
+            XHR.open("GET", "http://localhost:3000/GetString/");
+            XHR.send();
+        }
+
+</script>
+
+</body>
+</html>
